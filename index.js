@@ -5,7 +5,7 @@ var redirect_uri = "https://lit-hollows-38242.herokuapp.com";
 const express = require('express')
 const path = require('path')
 const request = require('request')
-const io = require('socket.io')();
+const socketio = require('socket.io');
 
 
 const PORT = process.env.PORT || 5000
@@ -16,6 +16,14 @@ const pool = new Pool({
   ssl: true
 });
 
+const app = express()
+.use(express.static(path.join(__dirname, 'public')))
+.set('views', path.join(__dirname, 'views'))
+.set('view engine', 'ejs')
+
+const io = socketio(app)
+
+
 // set up db listener
 const pg_client =  pool.connect()
   .then(client => client.query('LISTEN newload'))
@@ -24,7 +32,9 @@ const pg_client =  pool.connect()
 
 // set up socket updating
 io.on('connection', (client) => {
-  
+  console.log("Client connected");
+  client.on('disconnect', () => console.log("client disconnected"));
+
   client.emit('connected', { connected: true });
 
   client.on('subscribe-load-counter', () => {
@@ -49,10 +59,7 @@ const oauth2 = require('simple-oauth2').create({
 });
 
 
-const app = express()
-  .use(express.static(path.join(__dirname, 'public')))
-  .set('views', path.join(__dirname, 'views'))
-  .set('view engine', 'ejs')
+
 
 app.get('/db', async (req, res) => {
   try {
@@ -125,6 +132,4 @@ app.get('/auth', function (req, res) {
 
 });
 
-io.listen(9001);
-console.log('Listening sockets on 9001');
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
