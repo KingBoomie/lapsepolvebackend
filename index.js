@@ -9,7 +9,7 @@ express()
   .get('/', (req, res) => res.render('pages/index'))
   .get('/times', (req, res) => {
     let result = ""
-    const times = process.env.times || -1
+    const times = process.env.times || 5
     for (var i = 0; i < times; i++) {
       result += i + " "
       
