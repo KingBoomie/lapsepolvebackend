@@ -4,6 +4,17 @@ var redirect_uri = "https://lit-hollows-38242.herokuapp.com";
 
 const express = require('express')
 const path = require('path')
+const oauth2 = require('simple-oauth2').create({
+  client: {
+    id: clientId, 
+    secret: clientSecret, 
+  },
+  auth: {
+    tokenHost: 'https://id.smartid.ee',
+    tokenPath: '/oauth/access_token',
+  }
+  //authorizationPath: '/oauth/authorize'
+});
 const PORT = process.env.PORT || 5000
 
 const { Pool } = require('pg');
@@ -29,16 +40,10 @@ app.get('/db', async (req, res) => {
   }
 })
 
-var oauth2 = require('simple-oauth2')({
-  clientID: clientId,
-  clientSecret: clientSecret,
-  site: 'https://id.smartid.ee',
-  tokenPath: '/oauth/access_token',
-  authorizationPath: '/oauth/authorize'
-});
+
 
 // Authorization uri definition
-var authorization_uri = oauth2.authCode.authorizeURL({
+var authorization_uri = oauth2.authorizationCode.authorizeURL({
   redirect_uri: redirect_uri
 });
 
