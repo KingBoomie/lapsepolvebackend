@@ -17,8 +17,10 @@ const pool = new Pool({
 });
 
 // set up db listener
-const pg_client = await pool.connect()
-const query = pg_client.query('LISTEN newload');
+const pg_client =  pool.connect()
+  .then(client => client.query('LISTEN newload'))
+  .then(res => {});
+//const query_result = await pg_client.query('LISTEN newload');
 
 // set up socket updating
 io.on('connection', (client) => {
