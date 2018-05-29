@@ -66,7 +66,7 @@ app.get('/', function (req, res) {
       res.redirect(authorization_uri);
       return;
   } else if (typeof code !== 'undefined') {
-      oauth2.authCode.getToken({
+      oauth2.authorizationCode.getToken({
           code: code,
           redirect_uri: redirect_uri
       }, saveToken);
