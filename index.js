@@ -5,6 +5,35 @@ var redirect_uri = "https://lit-hollows-38242.herokuapp.com";
 const express = require('express')
 const path = require('path')
 const request = require('request')
+const io = require('socket.io')();
+
+
+const PORT = process.env.PORT || 5000
+
+const { Pool } = require('pg');
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+});
+
+// set up db listener
+const pg_client = await pool.connect()
+const query = pg_client.query('LISTEN newload');
+
+// set up socket updating
+io.on('connection', (client) => {
+  
+  client.emit('connected', { connected: true });
+
+  client.on('subscribe-load-counter', () => {
+    console.log("client subscribed to load counter");
+    pg_client.on('notification', (counter) => {
+      client.emit('load-count', counter);
+    })
+
+  })
+})
+
 const oauth2 = require('simple-oauth2').create({
   client: {
     id: clientId, 
@@ -16,13 +45,7 @@ const oauth2 = require('simple-oauth2').create({
   }
   //authorizationPath: '/oauth/authorize'
 });
-const PORT = process.env.PORT || 5000
 
-const { Pool } = require('pg');
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: true
-});
 
 const app = express()
   .use(express.static(path.join(__dirname, 'public')))
@@ -54,12 +77,12 @@ app.use(express.static('public'));
 
 
 // Initial page redirecting to Smart ID 
-app.get('/auth', function (req, res) {
-
+app.get('/', function (req, res) {
+      res.send('<h3>Hello Socket World!</h3>')
 });
 
 // Callback service parsing the authorization token and asking for the access token
-app.get('/', function (req, res) {
+app.get('/auth', function (req, res) {
   var code = req.query.code;
   var login = req.query.login;
   console.log(code + ", " + login);
@@ -100,4 +123,6 @@ app.get('/', function (req, res) {
 
 });
 
+io.listen(9001);
+console.log('Listening sockets on 9001');
 app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
