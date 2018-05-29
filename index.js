@@ -6,6 +6,7 @@ const express = require('express')
 const path = require('path')
 const request = require('request')
 const socketio = require('socket.io');
+const cors = require('cors')
 
 
 const PORT = process.env.PORT || 5000
@@ -17,6 +18,7 @@ const pool = new Pool({
 });
 
 const app = express()
+.use(cors())
 .use(express.static(path.join(__dirname, 'public')))
 .set('views', path.join(__dirname, 'views'))
 .set('view engine', 'ejs')
