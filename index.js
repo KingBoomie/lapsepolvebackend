@@ -21,7 +21,8 @@ const app = express()
 .set('views', path.join(__dirname, 'views'))
 .set('view engine', 'ejs')
 
-const io = socketio(app)
+const server = require('http').Server(app)
+const io = socketio(server)
 
 
 // set up db listener
