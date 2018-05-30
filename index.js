@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  //ssl: true
+  ssl: true
 });
 
 const whitelist = ['http://localhost:5000', 'http://localhost:8000', 'https://lapsepolvemaagia.netlify.com']
