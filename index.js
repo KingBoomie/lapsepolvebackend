@@ -28,9 +28,12 @@ const io = socketio(server)
 
 
 // set up db listener
-const pg_client =  pool.connect()
-  .then(client => client.query('LISTEN newload'))
+
+const pg_client;
+pool.connect()
+  .then(client => { client.query('LISTEN newload'); pg_client = client; })
   .then(res => {});
+
 //const query_result = await pg_client.query('LISTEN newload');
 
 // set up socket updating
