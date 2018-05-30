@@ -18,7 +18,7 @@ const pool = new Pool({
 });
 
 const app = express()
-.use(cors({credentials: true, origin: '*:*'}))
+//.use(cors({credentials: true, origin: '*:*'}))
 .use(express.static(path.join(__dirname, 'public')))
 .set('views', path.join(__dirname, 'views'))
 .set('view engine', 'ejs')
