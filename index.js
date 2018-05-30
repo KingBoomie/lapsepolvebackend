@@ -24,7 +24,7 @@ const app = express()
 .set('view engine', 'ejs')
 
 const server = require('http').Server(app)
-const io = socketio(server)
+const io = socketio(server, { origins: '*:*'} )
 
 
 // set up db listener
