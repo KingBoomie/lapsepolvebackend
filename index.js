@@ -135,4 +135,4 @@ app.get('/auth', function (req, res) {
 
 });
 
-app.listen(PORT, () => console.log(`Listening on ${ PORT }`))
+server.listen(PORT, () => console.log(`Listening on ${ PORT }`))
