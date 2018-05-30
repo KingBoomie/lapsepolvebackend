@@ -18,7 +18,7 @@ const pool = new Pool({
 });
 
 const app = express()
-.use(cors({credentials: true, origin: 'http://90.190.222.228:8000'}))
+.use(cors({credentials: true, origin: 'https://lapsepolvemaagia.netlify.com/'}))
 .use(express.static(path.join(__dirname, 'public')))
 .set('views', path.join(__dirname, 'views'))
 .set('view engine', 'ejs')
