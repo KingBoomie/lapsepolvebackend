@@ -28,7 +28,7 @@ const io = socketio(server)
 server.use(cors({credentials: true, origin: 'https://lapsepolvemaagia.netlify.com'}))
 // set up db listener
 
-const pg_client;
+var pg_client;
 pool.connect()
   .then(client => { client.query('LISTEN newload'); pg_client = client; })
   .then(res => {});
