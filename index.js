@@ -44,10 +44,13 @@ io.on('connection', (client) => {
 
   client.on('subscribe-load-counter', () => {
     console.log("client subscribed to load counter");
+    
     pg_client.on('notification', (counter) => {
       client.emit('load-count', counter);
     })
-
+    
+    pg_client.query('UPDATE realtime SET counter = counter + 1')
+    
   })
 })
 
