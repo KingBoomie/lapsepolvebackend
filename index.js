@@ -7,6 +7,7 @@ const path = require('path')
 const request = require('request')
 const socketio = require('socket.io');
 const cors = require('cors')
+const UAParser = require('ua-parser-js')
 
 
 const PORT = process.env.PORT || 5000
@@ -14,14 +15,14 @@ const PORT = process.env.PORT || 5000
 const { Pool } = require('pg');
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: true
+  //ssl: true
 });
 
 const whitelist = ['http://localhost:5000', 'http://localhost:8000', 'https://lapsepolvemaagia.netlify.com']
 const corsOptions = {
   credentials: true,
   origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1) {
+    if (whitelist.indexOf(origin) !== -1 || true) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))
@@ -180,6 +181,24 @@ app.put('/fingerprint', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.send("Error " + err);
+  }
+})
+
+app.get('/user_stats', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const uniques = await client.query(`select count(*) as unique_v from users`)
+    const user_agents = await client.query('select user_agent from users')
+    
+    
+    
+    const OSs = user_agents.rows.map(ua => new UAParser(ua.user_agent).getOS().name)
+    console.log(OSs, uniques);
+    res.send({unique_users: uniques.rows[0].unique_v, oss: OSs});
+    
+  } catch (e) {
+    console.error(e)
+    res.send(e);
   }
 })
 
