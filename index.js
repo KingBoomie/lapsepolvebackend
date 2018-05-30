@@ -18,6 +18,7 @@ const pool = new Pool({
 });
 
 const app = express()
+app.use(cors({credentials: true, origin: 'https://lapsepolvemaagia.netlify.com'}))
 .use(express.static(path.join(__dirname, 'public')))
 .set('views', path.join(__dirname, 'views'))
 .set('view engine', 'ejs')
@@ -25,7 +26,6 @@ const app = express()
 const server = require('http').Server(app)
 const io = socketio(server)
 
-server.use(cors({credentials: true, origin: 'https://lapsepolvemaagia.netlify.com'}))
 // set up db listener
 
 var pg_client;
